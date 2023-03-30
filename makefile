@@ -1,5 +1,9 @@
 SHELL := /bin/bash
 
+tidy:
+	go mod tidy
+	go mod vendor
+
 run:
 	go run main.go
 
@@ -31,7 +35,7 @@ kind-load:
 	kind load docker-image test-service-amd64:$(VERSION) --name $(KIND_CLUSTER)
 
 kind-apply:
-	cat config/k8s/base/service-pod/base-service.yaml | kubectl apply -f -
+	kustomize build config/k8s/kind/service-pod | kubectl apply -f -
 
 kind-logs:
 	kubectl logs -l app=service --all-containers=true -f --tail=100
@@ -40,6 +44,8 @@ kind-restart:
 	kubectl rollout restart deployment service-pod
 
 kind-update: all kind-load kind-restart
+
+kind-update-apply: all kind-load kind-apply
 
 kind-status-service:
 	kubectl get pods -o wide --watch

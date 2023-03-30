@@ -5,7 +5,7 @@ tidy:
 	go mod vendor
 
 run:
-	go run main.go
+	go run app/services/sales-api/main.go
 
 build:
 	go build -ldflags "-X main.build=local"

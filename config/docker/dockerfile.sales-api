@@ -3,18 +3,18 @@ ENV CGO_ENABLED 0
 ARG BUILD_REF
 
 COPY . /src
-WORKDIR /src
-RUN go build -ldflags "-X main.build=${BUILD_REF}" -o service
+WORKDIR /src/app/services/sales-api
+RUN go build -ldflags "-X main.build=${BUILD_REF}" -o sales-api
 
 FROM alpine:3.14
 ARG BUILD_DATE
 ARG BUILD_REF
-COPY --from=test-api /src/service /service/service
+COPY --from=test-api /src/app/services/sales-api/sales-api /service/sales-api
 WORKDIR /service
-CMD ["./service"]
+CMD ["./sales-api"]
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}" \
-        org.opencontainers.image.title="test-api" \
+        org.opencontainers.image.title="sales-api" \
         org.opencontainers.image.authors="Umed Jadhav <umedj.formal@gmail.com" \
         org.opencontainers.image.source="https://github.com/umedj/cnGoService/" \
         org.opencontainers.image.revision="${BUILD_REF}" \

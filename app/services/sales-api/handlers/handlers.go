@@ -3,12 +3,12 @@ package handlers
 import (
 	"cnGoService/app/services/sales-api/handlers/debug/checkgrp"
 	"cnGoService/app/services/sales-api/handlers/v1/testgrp"
+	"cnGoService/foundation/web"
 	"expvar"
 	"net/http"
 	"net/http/pprof"
 	"os"
 
-	"github.com/dimfeld/httptreemux/v5"
 	"go.uber.org/zap"
 )
 
@@ -45,12 +45,18 @@ type APIMuxConfig struct {
 }
 
 // APIMux constructs an http.Handler with all application routes defined
-func APIMux(conf APIMuxConfig) *httptreemux.ContextMux {
-	mux := httptreemux.NewContextMux()
+func APIMux(conf APIMuxConfig) *web.App {
+	app := web.NewApp(conf.Shutdown)
+	// Load the routes for different versions
+	v1(app, conf)
+	return app
+}
+
+// v1 binds all the v1 routes
+func v1(app *web.App, conf APIMuxConfig) {
+	const version = "v1"
 	tgh := testgrp.Handler{
 		Log: conf.Log,
 	}
-
-	mux.Handle(http.MethodGet, "/v1/test", tgh.Test)
-	return mux
+	app.Handle(http.MethodGet, version, "/test", tgh.Test)
 }

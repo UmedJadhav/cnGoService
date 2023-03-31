@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"cnGoService/app/services/sales-api/handlers/debug/checkgrp"
-	"encoding/json"
+	"cnGoService/app/services/sales-api/handlers/v1/testgrp"
 	"expvar"
 	"net/http"
 	"net/http/pprof"
@@ -47,15 +47,10 @@ type APIMuxConfig struct {
 // APIMux constructs an http.Handler with all application routes defined
 func APIMux(conf APIMuxConfig) *httptreemux.ContextMux {
 	mux := httptreemux.NewContextMux()
-	h := func(w http.ResponseWriter, r *http.Request) {
-		status := struct {
-			Status string
-		}{
-			Status: "OK",
-		}
-		json.NewEncoder(w).Encode(status)
+	tgh := testgrp.Handler{
+		Log: conf.Log,
 	}
 
-	mux.Handle(http.MethodGet, "/test", h)
+	mux.Handle(http.MethodGet, "/v1/test", tgh.Test)
 	return mux
 }

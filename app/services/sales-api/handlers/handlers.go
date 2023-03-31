@@ -3,6 +3,7 @@ package handlers
 import (
 	"cnGoService/app/services/sales-api/handlers/debug/checkgrp"
 	"cnGoService/app/services/sales-api/handlers/v1/testgrp"
+	"cnGoService/business/web/middleware"
 	"cnGoService/foundation/web"
 	"expvar"
 	"net/http"
@@ -46,7 +47,9 @@ type APIMuxConfig struct {
 
 // APIMux constructs an http.Handler with all application routes defined
 func APIMux(conf APIMuxConfig) *web.App {
-	app := web.NewApp(conf.Shutdown)
+	app := web.NewApp(
+		conf.Shutdown,
+		middleware.Logger(conf.Log))
 	// Load the routes for different versions
 	v1(app, conf)
 	return app

@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"os"
 	"syscall"
+	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/dimfeld/httptreemux/v5"
 )
@@ -37,7 +40,15 @@ func (a *App) Handle(method string, group string, path string, handler Handler, 
 	handler = wrapMiddleware(a.mw, handler)
 
 	h := func(w http.ResponseWriter, r *http.Request) {
-		if err := handler(r.Context(), w, r); err != nil {
+		ctx := r.Context()
+		v := Values{
+			TraceID: uuid.New().String(),
+			Now:     time.Now(),
+		}
+		ctx = context.WithValue(ctx, key, &v)
+
+		if err := handler(ctx, w, r); err != nil {
+			a.SignalShutdown()
 			return
 		}
 	}

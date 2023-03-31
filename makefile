@@ -1,4 +1,5 @@
 SHELL := /bin/bash
+expvarmon -ports=":4000" -vars="build,requests,goroutines,errors,panics,mem:memstats.Alloc"
 
 tidy:
 	go mod tidy
@@ -20,7 +21,7 @@ sales-api:
 			--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%S"Z` \
 			.
 
-KIND_CLUSTER := test-api-cluster
+KIND_CLUSTER := sales-api-cluster
 
 kind-up:
 	kind create cluster \

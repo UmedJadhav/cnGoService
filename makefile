@@ -15,6 +15,9 @@ VERSION := 1.0
 
 all: sales-api
 
+admin:
+	go run app/tooling/admin/main.go
+
 sales-api:
 	docker build -f config/docker/dockerfile.sales-api -t sales-api-amd64:$(VERSION) \
 			--build-arg BUILD_REF=$(VERSION) \

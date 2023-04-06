@@ -49,7 +49,9 @@ type APIMuxConfig struct {
 func APIMux(conf APIMuxConfig) *web.App {
 	app := web.NewApp(
 		conf.Shutdown,
-		middleware.Logger(conf.Log))
+		middleware.Logger(conf.Log),
+		middleware.Errors(conf.Log),
+	)
 	// Load the routes for different versions
 	v1(app, conf)
 	return app

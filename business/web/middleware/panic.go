@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"cnGoService/business/system/metrics"
 	"cnGoService/foundation/web"
 	"context"
 	"fmt"
@@ -16,7 +17,7 @@ func Panics() web.Middleware {
 				if rec := recover(); rec != nil {
 					trace := debug.Stack()
 					err = fmt.Errorf("PANIC [%v] TRACE[%s]", rec, trace)
-					// make a call to metrics service to log panic
+					metrics.AddPanics(ctx)
 				}
 			}()
 

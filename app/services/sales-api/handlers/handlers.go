@@ -51,6 +51,7 @@ func APIMux(conf APIMuxConfig) *web.App {
 		conf.Shutdown,
 		middleware.Logger(conf.Log),
 		middleware.Errors(conf.Log),
+		middleware.Panics(), // Always has to be add the end of chain viz. Needs to be the first point of entry
 	)
 	// Load the routes for different versions
 	v1(app, conf)
